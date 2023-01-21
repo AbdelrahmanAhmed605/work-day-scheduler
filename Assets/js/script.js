@@ -1,7 +1,3 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-
 /* Obtains all the event information from the localStorage and displays it in their corresponding sections on the 
 page */
 $(window).on('load',function() {
@@ -15,12 +11,14 @@ $(window).on('load',function() {
     const eventText = saved_events[event];
     eventTimeEl.children("textarea, .description").text(eventText); //Traverses through the DOM to edit the description of the textarea corresponding to the event time
   }
+
+  displayDay();
+  checkTime();
 })
 
 var saveBtn = $(".saveBtn");
 
-/* Obtains the time and description of the event when it is saved by the user and saves it to the local storage,
-while also displays the new information on the page */
+/* Obtains the time and description of the event when it is saved by the user and saves it to the local storage*/
 saveBtn.on('click', function () {
   var btnclicked = $(this) //JQuery object of the DOM element that was clicked on (the save button)
 
@@ -36,6 +34,46 @@ saveBtn.on('click', function () {
   saved_events[eventTime] = eventText;
   localStorage.setItem("saved_events", JSON.stringify(saved_events));
 })
+
+var today = dayjs(); //Get's today's date
+
+//Displays the current day on the screen
+function displayDay() {
+  var currentDay = today.format("dddd, MMMM D"); //Get the formatted date according to the string of tokens passed in.
+  $("#currentDay").text(currentDay); //Displays the formatted date on the screen
+}
+
+/* Checks the current hour of the day and compares it to the work hours in the day planner.
+One of three classes (past,present,and future) is applied to the div sections of each work hour based on 
+it's relation the current hour. These classes apply color stylings to help visually display the hours of the work
+day. */
+function checkTime() {
+
+  var currentHour = today.hour(); //Get's the current hour
+  var workHours = $(".time-block"); //Get's an array of all time block div's in HTML 
+
+  for (var hour = 0; hour < workHours.length; hour++) {
+    elementHour = parseInt(workHours[hour].id.split("-")[1]); //Obtains the corresponding hour (24-hr time) of a div element using its id 
+    if (elementHour < currentHour) {
+      $(workHours[hour]).removeClass("present");
+      $(workHours[hour]).removeClass("future");
+      $(workHours[hour]).addClass("past");
+    } else if (elementHour == currentHour) {
+      $(workHours[hour]).removeClass("past");
+      $(workHours[hour]).removeClass("future");
+      $(workHours[hour]).addClass("present");
+    } else {
+      $(workHours[hour]).removeClass("past");
+      $(workHours[hour]).removeClass("present");
+      $(workHours[hour]).addClass("future");
+    }
+  }
+}
+
+
+// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
+// the code isn't run until the browser has finished rendering all the elements
+// in the html.
 
 $(function () {
   // TODO: Add a listener for click events on the save button. This code should
