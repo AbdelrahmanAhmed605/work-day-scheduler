@@ -1,4 +1,5 @@
 var saveBtn = $(".saveBtn");
+var textArea = $(".description")
 
 /* Obtains all the event information from the localStorage and displays it in their corresponding sections on the page */
 $(window).on("load", function () {
@@ -10,7 +11,7 @@ $(window).on("load", function () {
   for (const event in saved_events) {
     const eventTimeEl = $(`#${event}`); //Element containing the id representing the event time stored in the local storage
     const eventText = saved_events[event];
-    eventTimeEl.children("textarea, .description").text(eventText); //Traverses through the DOM to edit the description of the textarea corresponding to the event time
+    eventTimeEl.children("textarea.description").text(eventText); //Traverses through the DOM to edit the description of the textarea corresponding to the event time
   }
 });
 
@@ -21,7 +22,7 @@ saveBtn.on("click", function () {
 
   //Traverses through the DOM to obtain the event's time (id of the parent element) and description(value of the textarea sibling element)
   var eventTime = btnclicked.parents(".time-block")[0].id;
-  var eventText = btnclicked.siblings("textarea, .description").val();
+  var eventText = btnclicked.siblings("textarea.description").val();
 
   var saved_events = JSON.parse(localStorage.getItem("saved_events"));
   if (saved_events == null) {
@@ -29,7 +30,27 @@ saveBtn.on("click", function () {
   }
   saved_events[eventTime] = eventText;
   localStorage.setItem("saved_events", JSON.stringify(saved_events));
+
+  var eventAdded = $(`<div id="event-added-note" class="text-center mb-2">Appointment added to <span class="text-danger">localStorage✅</div>`);
+  $("div.container-fluid").prepend(eventAdded);;
 });
+
+/* Removes the "Appointmed added to localStorage" note when the user is about to enter a new event, and adds border to the textarea the user is typing on*/
+textArea.on("focusin", function () {
+  var eventAdded = $("#event-added-note");
+  eventAdded.remove();
+
+  var textClicked = $(this);
+  textClicked.addClass("border border-dark border-2");
+});
+
+/* Removes border from textarea when user clicks away from it*/
+textArea.on("focusout", function () {
+  var textClicked = $(this);
+
+  textClicked.removeClass("border border-dark border-2");
+});
+
 
 //Continuously checks the time every second and displays it
 var updateTime = setInterval(() => {
