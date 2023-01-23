@@ -16,7 +16,7 @@ $(window).on("load", function () {
 });
 
 
-/* Obtains the time and description of the event when it is saved by the user and saves it to the local storage*/
+/* Obtains the time and description of the event when it is saved by the user, then saves it to the local storage and displays a note to confirm the event has been added*/
 saveBtn.on("click", function () {
   var btnclicked = $(this); //JQuery object of the DOM element that was clicked on (the save button)
 
@@ -31,6 +31,7 @@ saveBtn.on("click", function () {
   saved_events[eventTime] = eventText;
   localStorage.setItem("saved_events", JSON.stringify(saved_events));
 
+  //Displays note on page to confirm event is added
   var eventAdded = $(`<div id="event-added-note" class="text-center mb-2">Appointment added to <span class="text-danger">localStorage✅</div>`);
   $("div.container-fluid").prepend(eventAdded);;
 });
