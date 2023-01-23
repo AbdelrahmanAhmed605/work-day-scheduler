@@ -18,7 +18,7 @@ $(window).on("load", function () {
 
 /* Obtains the time and description of the event when it is saved by the user, then saves it to the local storage and displays a note to confirm the event has been added*/
 saveBtn.on("click", function () {
-  var btnclicked = $(this); //JQuery object of the DOM element that was clicked on (the save button)
+  var btnclicked = $(this);
 
   //Traverses through the DOM to obtain the event's time (id of the parent element) and description(value of the textarea sibling element)
   var eventTime = btnclicked.parents(".time-block")[0].id;
@@ -33,7 +33,10 @@ saveBtn.on("click", function () {
 
   //Displays note on page to confirm event is added
   var eventAdded = $(`<div id="event-added-note" class="text-center mb-2">Appointment added to <span class="text-danger">localStorage✅</div>`);
-  $("div.container-fluid").prepend(eventAdded);;
+  $("div.container-fluid").prepend(eventAdded);
+
+  //Scrolls to top of page to let user see confirmation note
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
 /* Removes the "Appointmed added to localStorage" note when the user is about to enter a new event, and adds border to the textarea the user is typing on*/
@@ -45,7 +48,7 @@ textArea.on("focusin", function () {
   textClicked.addClass("border border-dark border-2");
 });
 
-/* Removes border from textarea when user clicks away from it*/
+// Removes border from textarea when user clicks away from it
 textArea.on("focusout", function () {
   var textClicked = $(this);
 
@@ -64,7 +67,7 @@ var updateTime = setInterval(() => {
 //Displays the current day on the screen
 function displayTime(today) {
   var currentDay = today.format("dddd, MMMM D - hh:mm a"); //Get the formatted date according to the string of tokens passed in.
-  $("#currentDay").text(currentDay); //Displays the formatted date on the screen
+  $("#currentDay").text(currentDay); 
 }
 
 
